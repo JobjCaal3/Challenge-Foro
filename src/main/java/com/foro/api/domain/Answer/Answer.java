@@ -1,4 +1,4 @@
-package com.foro.api.domain.answer;
+package com.foro.api.domain.Answer;
 
 import com.foro.api.domain.topic.Topic;
 import com.foro.api.domain.user.User;
@@ -34,4 +34,11 @@ public class Answer {
     @JoinColumn(name = "topic_id", referencedColumnName = "id_topic")
     private Topic topic;
 
+    public Answer(String message, User user, Topic topic) {
+        this.message = message;
+        this.messageStatus = true;
+        this.creationDate = new Date();
+        this.user = user;
+        this.topic = topic;
+    }
 }

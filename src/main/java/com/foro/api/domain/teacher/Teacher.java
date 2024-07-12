@@ -1,7 +1,6 @@
 package com.foro.api.domain.teacher;
 
 import com.foro.api.domain.course.Course;
-import com.foro.api.domain.role.Role;
 import com.foro.api.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,18 +22,42 @@ public class Teacher {
     private Long idTeacher;
     @Column(name = "full_name")
     private String fullName;
-    private String specialty;
-    private int age;
+    @Enumerated(EnumType.STRING)
+    //TODO hacer que el profesor pueda tener mas de una epcialidad
+    private SpecialtyTeacher specialty;
+    private String description;
     private String phone;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id_user")
     private User user;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", referencedColumnName = "id_role")
-    private Role role;
-
     @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "teacher")
     private List<Course> course = new ArrayList<>();
+
+    public Teacher(DtoRegisterTeacher dtoRegisterTeacher, User user) {
+        this.fullName = dtoRegisterTeacher.fullName();
+        this.specialty = dtoRegisterTeacher.specialty();
+        this.description = dtoRegisterTeacher.description();
+        this.phone = dtoRegisterTeacher.phone();
+        this.user = user;
+    }
+
+    public void UpdateDatos(DtoUpdateTeacher dtoUpdateTeacher) {
+        if (dtoUpdateTeacher.fullName() != null){
+            this.fullName = dtoUpdateTeacher.fullName();
+        }
+        if (dtoUpdateTeacher.specialty() != null){
+            this.specialty = dtoUpdateTeacher.specialty();
+        }
+        if (dtoUpdateTeacher.description() != null){
+            this.description = dtoUpdateTeacher.description();
+        }
+        if (dtoUpdateTeacher.phone() != null){
+            this.phone = dtoUpdateTeacher.phone();
+        }
+        if (dtoUpdateTeacher.user() != null){
+            this.user = user.updatePassword(dtoUpdateTeacher.user());
+        }
+    }
 }

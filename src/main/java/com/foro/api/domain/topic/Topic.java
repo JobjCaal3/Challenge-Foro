@@ -1,12 +1,15 @@
 package com.foro.api.domain.topic;
 
-import com.foro.api.domain.answer.Answer;
+import com.foro.api.domain.Answer.Answer;
 import com.foro.api.domain.course.Course;
 import com.foro.api.domain.student.Student;
-import com.foro.api.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +30,7 @@ public class Topic {
     private String title;
     private String message;
     @Column(name = "creation_date")
-    private Date creationDate;
+    private LocalDateTime creationDate;
     @Column(name = "status_topic")
     private Boolean statusTopic;
 
@@ -43,4 +46,27 @@ public class Topic {
     private List<Answer> answer = new ArrayList<>();
 
 
+    public Topic(DtoRegisterTopic dtoRegisterTopic, Student student, Course course) {
+        this.title = dtoRegisterTopic.title();
+        this.message = dtoRegisterTopic.message();
+        this.student = student;
+        this.course = course;
+        this.creationDate = LocalDateTime.now();
+        this.statusTopic = true;
+    }
+
+    public void UpdateDataTopic(DtoUpdateTopic dtoUpdateTopic) {
+        if (dtoUpdateTopic.title() != null) this.title = dtoUpdateTopic.title();
+        if (dtoUpdateTopic.message() != null )this.message = dtoUpdateTopic.message();
+    }
+
+    public void deleted(){
+        this.statusTopic = false;
+    }
+
+    //para darle formato a la fecha de creacion, esta se convierte en un string y deja de ser como tal un date
+    public String getFormattedCreationDateTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy  HH");
+        return this.creationDate.format(formatter);
+    }
 }

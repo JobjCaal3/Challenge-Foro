@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Data
 @Setter
@@ -21,7 +22,10 @@ public class Course {
     @Column(name = "id_course")
     private Long idCourse;
     private String name;
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private CategoryCourse category;
+    @Column(name = "description_course")
+    private String descriptionCourse;
     @Column(name = "current_status")
     private Boolean currentStatus;
 
@@ -32,4 +36,11 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private List<Topic> topics = new ArrayList<>();
 
+    public Course(DtoCreateCourse dtoCreateCourse, Teacher teacher) {
+        this.name = dtoCreateCourse.name();
+        this.category = dtoCreateCourse.category();
+        this.descriptionCourse = dtoCreateCourse.descriptionCourse();
+        this.currentStatus = true;
+        this.teacher = teacher;
+    }
 }

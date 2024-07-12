@@ -3,6 +3,8 @@ package com.foro.api.domain.role;
 import jakarta.persistence.*;
 import lombok.*;
 
+import javax.lang.model.element.TypeElement;
+
 @Data
 @Getter
 @Setter
@@ -17,4 +19,5 @@ public class Role {
     private Long idRole;
     @Column(name = "name_role")
     private String nameRole;
+
 }
