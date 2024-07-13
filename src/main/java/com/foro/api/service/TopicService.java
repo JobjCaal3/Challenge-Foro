@@ -1,5 +1,7 @@
 package com.foro.api.service;
 
+import com.foro.api.domain.Answer.Answer;
+import com.foro.api.domain.Answer.AnswerRepository;
 import com.foro.api.domain.course.Course;
 import com.foro.api.domain.course.CourseRepository;
 import com.foro.api.domain.student.Student;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,11 +24,13 @@ public class TopicService {
     private TopicRepository topicRepo;
     private StudentRepository studentRepo;
     private CourseRepository courseRepo;
+    private AnswerRepository answerRepo;
     @Autowired
-    public TopicService(TopicRepository topicRepo, StudentRepository studentRepo, CourseRepository courseRepo) {
+    public TopicService(TopicRepository topicRepo, StudentRepository studentRepo, CourseRepository courseRepo, AnswerRepository answerRepo) {
         this.topicRepo = topicRepo;
         this.studentRepo = studentRepo;
         this.courseRepo = courseRepo;
+        this.answerRepo = answerRepo;
     }
 
     public ResponseEntity<DtoTopicResponse> createTopic(DtoRegisterTopic dtoRegisterTopic,
@@ -54,10 +59,10 @@ public class TopicService {
         return ResponseEntity.ok(page);
     }
 
-    public ResponseEntity<DtoListAllTopics> topicDetails(Long idTopic) {
-        Topic topic = topicRepo.findByIdTopicAndStatusTopicTrue(idTopic)
-                .orElseThrow(()->new ValidationIntegration("el topico no existe o esta inactivo"));
-        return ResponseEntity.ok(new DtoListAllTopics(topic));
+    public ResponseEntity<DtoDetailsTopic> topicDetails(Long idTopic) {
+        Topic topic = topicRepo.findByIdTopicAndStatusTopicTrue(idTopic).orElseThrow(()->new ValidationIntegration("el topico no existe o esta inactivo"));
+        List<Answer> answer = answerRepo.findByTopicAndMessageStatusTrue(topic);
+        return ResponseEntity.ok(new DtoDetailsTopic(topic, answer));
     }
 
     public ResponseEntity<DtoTopicResponse> updateTopic(DtoUpdateTopic dtoUpdateTopic) {

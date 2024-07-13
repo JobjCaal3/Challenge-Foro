@@ -5,6 +5,7 @@ import com.foro.api.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Data
@@ -40,5 +41,16 @@ public class Answer {
         this.creationDate = new Date();
         this.user = user;
         this.topic = topic;
+    }
+
+    public void updateAnswer(DtoUpdateAnswer dtoUpdateAnswer) {
+        if (dtoUpdateAnswer.message() != null){
+            this.message = dtoUpdateAnswer.message();
+            this.creationDate = new Date();
+        }
+    }
+
+    public void deletedAnswer() {
+        this.messageStatus = false;
     }
 }

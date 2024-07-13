@@ -1,9 +1,6 @@
 package com.foro.api.controller;
 
-import com.foro.api.domain.topic.DtoListAllTopics;
-import com.foro.api.domain.topic.DtoRegisterTopic;
-import com.foro.api.domain.topic.DtoTopicResponse;
-import com.foro.api.domain.topic.DtoUpdateTopic;
+import com.foro.api.domain.topic.*;
 import com.foro.api.service.TopicService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +36,7 @@ public class TopicController {
     }
 
     @GetMapping("/{idTopic}")
-    public ResponseEntity<DtoListAllTopics> topicDetails(@PathVariable Long idTopic){
+    public ResponseEntity<DtoDetailsTopic> topicDetails(@PathVariable Long idTopic){
         return topicService.topicDetails(idTopic);
     }
 

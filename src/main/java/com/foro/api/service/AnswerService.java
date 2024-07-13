@@ -1,9 +1,6 @@
 package com.foro.api.service;
 
-import com.foro.api.domain.Answer.Answer;
-import com.foro.api.domain.Answer.AnswerRepository;
-import com.foro.api.domain.Answer.DtoAnswerResponse;
-import com.foro.api.domain.Answer.DtoCreateAnswer;
+import com.foro.api.domain.Answer.*;
 import com.foro.api.domain.topic.Topic;
 import com.foro.api.domain.topic.TopicRepository;
 import com.foro.api.domain.user.User;
@@ -42,5 +39,17 @@ public class AnswerService {
         DtoAnswerResponse response = new DtoAnswerResponse(answer, user);
         URI uri = uriComponentsBuilder.path("/api-foro/answer/{id}").buildAndExpand(answer.getIdAnswer()).toUri();
         return ResponseEntity.created(uri).body(response);
+    }
+
+    public ResponseEntity<DtoAnswerResponse> updateAnswer(DtoUpdateAnswer dtoUpdateAnswer) {
+        Answer answer = answerRepo.findByidAnswerAndMessageStatusTrue(dtoUpdateAnswer.idAnswer()).orElseThrow(()->new ValidationIntegration("la respuesta a actualizar no existe"));
+        answer.updateAnswer(dtoUpdateAnswer);
+        return ResponseEntity.ok(new DtoAnswerResponse(answer));
+    }
+
+    public ResponseEntity deletedAnswer(Long idAnswer) {
+        Answer answer = answerRepo.findById(idAnswer).orElseThrow(()->new ValidationIntegration("la respuesta no existe"));
+        answer.deletedAnswer();
+        return ResponseEntity.noContent().build();
     }
 }
