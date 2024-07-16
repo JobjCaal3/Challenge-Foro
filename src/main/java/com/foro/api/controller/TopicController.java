@@ -31,7 +31,7 @@ public class TopicController {
     }
 
     @GetMapping("/list-all-topics")
-    public ResponseEntity<Page<DtoListAllTopics>> listTopics(@PageableDefault(size = 2, sort = {"title"}) Pageable pageable){
+    public ResponseEntity<Page<DtoListAllTopics>> listTopics(@PageableDefault(size = 9, sort = {"title"}) Pageable pageable){
         return topicService.listTopics(pageable);
     }
 

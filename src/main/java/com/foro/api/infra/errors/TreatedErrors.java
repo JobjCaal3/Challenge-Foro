@@ -8,6 +8,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.NoSuchElementException;
+
 @RestControllerAdvice
 public class TreatedErrors {
 
@@ -25,6 +27,12 @@ public class TreatedErrors {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
         String errorMessage = "El correo ya existe, intente con otro.";
+        return ResponseEntity.badRequest().body(errorMessage);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity errorSearch(){
+        String errorMessage = "no se encontro el elemento";
         return ResponseEntity.badRequest().body(errorMessage);
     }
 

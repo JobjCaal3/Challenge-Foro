@@ -43,4 +43,15 @@ public class Course {
         this.currentStatus = true;
         this.teacher = teacher;
     }
+
+    public void updateCourse(DtoUpdateCourse dtoUpdateCourse, Teacher teacher){
+        if(dtoUpdateCourse.name() != null) this.name = dtoUpdateCourse.name();
+        if(dtoUpdateCourse.category() != null) this.category = dtoUpdateCourse.category();
+        if(dtoUpdateCourse.descriptionCourse() != null) this.descriptionCourse = dtoUpdateCourse.descriptionCourse();
+        if(teacher != null) this.teacher = teacher;
+    }
+
+    public void deltedCourse(Long idCourse) {
+        this.currentStatus = false;
+    }
 }
