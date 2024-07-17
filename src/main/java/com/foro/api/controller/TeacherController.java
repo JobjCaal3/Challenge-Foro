@@ -1,17 +1,20 @@
 package com.foro.api.controller;
 
-import com.foro.api.domain.teacher.DtoRegisterTeacher;
-import com.foro.api.domain.teacher.DtoTeacherResponse;
-import com.foro.api.domain.teacher.DtoUpdateTeacher;
+import com.foro.api.domain.teacher.*;
 import com.foro.api.domain.user.DTOAuth.DtoAuthenticateResponse;
 import com.foro.api.domain.user.DTOAuth.DtoLogin;
 import com.foro.api.service.TeacherService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api-foro/teacher")
@@ -31,20 +34,24 @@ public class TeacherController {
 
     }
 
-    //actualizar los datos de teacher
     @PutMapping("/update")
     @Transactional
-    public ResponseEntity updateTeacher(@RequestBody @Valid DtoUpdateTeacher dtoUpdateTeacher){
+    public ResponseEntity<DtoTeacherResponse> updateTeacher(@RequestBody @Valid DtoUpdateTeacher dtoUpdateTeacher){
         return teacherService.updateTeacher(dtoUpdateTeacher);
     }
 
+    @GetMapping("/list-all-teacher")
+    public ResponseEntity<Page<DtoTeacherResponse>> listTeacher(@PageableDefault(size = 2, sort = {"fullName"}) Pageable pageable){
+        return teacherService.listTeacher(pageable);
+    }
 
-    //obtener todos los profesores
-    //@GetMapping
+    @GetMapping("/details-teacher/{idTeacher}")
+    public ResponseEntity<DtoTeacherDetailsResponse> detailTeacher(@PathVariable Long idTeacher){
+        return teacherService.detailTeacher(idTeacher);
+    }
 
-    //obtener los datos de un solo profesor
-
-    //desactivar un profesor
-    //@DeleteMapping
-
+    @GetMapping("/search-teacher-especiality/{specialty}")
+    public ResponseEntity<List<DtoTeacherResponse>> searchEspeciality(@PathVariable String specialty){
+        return teacherService.searchEspeciality(specialty);
+    }
 }

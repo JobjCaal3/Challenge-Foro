@@ -23,7 +23,6 @@ public class Teacher {
     @Column(name = "full_name")
     private String fullName;
     @Enumerated(EnumType.STRING)
-    //TODO hacer que el profesor pueda tener mas de una epcialidad
     private SpecialtyTeacher specialty;
     private String description;
     private String phone;

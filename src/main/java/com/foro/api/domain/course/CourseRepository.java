@@ -15,4 +15,6 @@ public interface CourseRepository extends JpaRepository<Course,Long> {
     @Query("SELECT c FROM Course c WHERE UPPER(c.category) LIKE CONCAT('%', UPPER(:category), '%')")
     List<Course> findByCategoryIgnoreCaseJPQL(String category);
     Optional<Course> findByidCourseAndCurrentStatusTrue(Long idCourse);
+    @Query("SELECT c FROM Course c WHERE c.teacher.idTeacher = :idTeacher AND c.currentStatus = true")
+    List<Course> searchCourseActivo(Long idTeacher);
 }

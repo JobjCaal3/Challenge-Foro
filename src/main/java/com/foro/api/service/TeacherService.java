@@ -1,39 +1,36 @@
 package com.foro.api.service;
 
+import com.foro.api.domain.course.Course;
+import com.foro.api.domain.course.CourseRepository;
+import com.foro.api.domain.course.DtoCourseResponse;
 import com.foro.api.domain.role.Role;
 import com.foro.api.domain.role.RoleRepository;
 import com.foro.api.domain.teacher.*;
-import com.foro.api.domain.user.DTOAuth.DtoAuthenticateResponse;
-import com.foro.api.domain.user.DTOAuth.DtoLogin;
 import com.foro.api.domain.user.User;
 import com.foro.api.infra.errors.ValidationIntegration;
-import com.foro.api.infra.security.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @Service
 public class TeacherService {
     private TeacherRepository teacherRepo;
     private RoleRepository roleRepo;
-    private AuthenticationManager authenticationManager;
     private PasswordEncoder passwordEncoder;
-    private TokenService tokenService;
+    private CourseRepository courseRepo;
     @Autowired
-    public TeacherService(TeacherRepository teacherRepo, RoleRepository roleRepo, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, TokenService tokenService) {
+    public TeacherService(TeacherRepository teacherRepo, RoleRepository roleRepo, PasswordEncoder passwordEncoder, CourseRepository courseRepo) {
         this.teacherRepo = teacherRepo;
         this.roleRepo = roleRepo;
-        this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
-        this.tokenService = tokenService;
+        this.courseRepo = courseRepo;
     }
 
     public ResponseEntity<DtoTeacherResponse> registerTeacher(DtoRegisterTeacher dtoRegisterTeacher,
@@ -50,12 +47,30 @@ public class TeacherService {
         return ResponseEntity.created(url).body(dtoTeacher);
     }
 
-    public ResponseEntity updateTeacher(DtoUpdateTeacher dtoUpdateTeacher) {
-        Teacher teacher = teacherRepo.getReferenceById(dtoUpdateTeacher.id());
+    public ResponseEntity<DtoTeacherResponse> updateTeacher(DtoUpdateTeacher dtoUpdateTeacher) {
+        Teacher teacher = teacherRepo.getReferenceById(dtoUpdateTeacher.idTeacher());
         teacher.UpdateDatos(dtoUpdateTeacher);
-        DtoTeacherResponse datosTeacher = new DtoTeacherResponse(teacher);
-        return ResponseEntity.ok(datosTeacher);
+        return ResponseEntity.ok(new DtoTeacherResponse(teacher));
     }
 
+    public ResponseEntity<Page<DtoTeacherResponse>> listTeacher(Pageable pageable) {
+        var page = teacherRepo.listAllTeacher(pageable).map(DtoTeacherResponse::new);
+        return ResponseEntity.ok(page);
+    }
+
+    public ResponseEntity<DtoTeacherDetailsResponse> detailTeacher(Long idTeacher) {
+        Teacher teacher = teacherRepo.detailTeacherActivo(idTeacher).orElseThrow(()->new ValidationIntegration("no se encontro el curso o esta inactivo"));;
+        List<Course> courses = courseRepo.searchCourseActivo(idTeacher);
+        return ResponseEntity.ok(new DtoTeacherDetailsResponse(teacher, courses));
+    }
+
+    public ResponseEntity<List<DtoTeacherResponse>> searchEspeciality(String specialty) {
+        List<DtoTeacherResponse> teacherResponses = teacherRepo.searchEspecialityTeacher(specialty)
+                .stream().map(DtoTeacherResponse::new).toList();
+        if(teacherResponses.isEmpty() || teacherResponses == null){
+            throw new ValidationIntegration("la especialidad por la que esta filtrando no existe");
+        }
+        return ResponseEntity.ok(teacherResponses);
+    }
 
 }
