@@ -65,7 +65,7 @@ public class TokenService {
             verifier.verify(token);
             return true;
         } catch (TokenExpiredException expiredException) {
-            throw new JWTVerificationException("Token expired");
+            throw new TokenExpiredException("Token expired", expiredException.getExpiredOn());
         }catch (JWTVerificationException exception) {
             throw new JWTVerificationException("Token invalid, not Authorized");
         }

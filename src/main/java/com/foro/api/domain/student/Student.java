@@ -38,4 +38,10 @@ public class Student {
         this.phone = dtoRegisterStudent.Phone();
         this.user = user;
     }
+
+    public void updateStudent(DtoUpdateDataStudent dtoUpdateDataStudent) {
+        if(dtoUpdateDataStudent.fullName() != null) this.fullName = dtoUpdateDataStudent.fullName();
+        if(dtoUpdateDataStudent.description() != null) this.description = dtoUpdateDataStudent.description();
+        if(dtoUpdateDataStudent.phone() != null) this.phone = dtoUpdateDataStudent.phone();
+    }
 }

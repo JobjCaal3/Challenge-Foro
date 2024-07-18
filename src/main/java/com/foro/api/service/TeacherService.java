@@ -2,7 +2,6 @@ package com.foro.api.service;
 
 import com.foro.api.domain.course.Course;
 import com.foro.api.domain.course.CourseRepository;
-import com.foro.api.domain.course.DtoCourseResponse;
 import com.foro.api.domain.role.Role;
 import com.foro.api.domain.role.RoleRepository;
 import com.foro.api.domain.teacher.*;
@@ -48,18 +47,19 @@ public class TeacherService {
     }
 
     public ResponseEntity<DtoTeacherResponse> updateTeacher(DtoUpdateTeacher dtoUpdateTeacher) {
-        Teacher teacher = teacherRepo.getReferenceById(dtoUpdateTeacher.idTeacher());
-        teacher.UpdateDatos(dtoUpdateTeacher);
+        Teacher teacher = teacherRepo.findById(dtoUpdateTeacher.idTeacher()).orElseThrow(()->new ValidationIntegration("teacher not found"));
+        teacher.getUser().setPassword(passwordEncoder.encode(dtoUpdateTeacher.user().password()));
+        teacher.UpdateTeacher(dtoUpdateTeacher);
         return ResponseEntity.ok(new DtoTeacherResponse(teacher));
     }
 
     public ResponseEntity<Page<DtoTeacherResponse>> listTeacher(Pageable pageable) {
-        var page = teacherRepo.listAllTeacher(pageable).map(DtoTeacherResponse::new);
+        Page<DtoTeacherResponse> page = teacherRepo.listAllTeacher(pageable).map(DtoTeacherResponse::new);
         return ResponseEntity.ok(page);
     }
 
     public ResponseEntity<DtoTeacherDetailsResponse> detailTeacher(Long idTeacher) {
-        Teacher teacher = teacherRepo.detailTeacherActivo(idTeacher).orElseThrow(()->new ValidationIntegration("no se encontro el curso o esta inactivo"));;
+        Teacher teacher = teacherRepo.detailTeacherActivo(idTeacher).orElseThrow(()->new ValidationIntegration("Teacher not found or is inactive"));;
         List<Course> courses = courseRepo.searchCourseActivo(idTeacher);
         return ResponseEntity.ok(new DtoTeacherDetailsResponse(teacher, courses));
     }

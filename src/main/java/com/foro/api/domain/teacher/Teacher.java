@@ -42,7 +42,7 @@ public class Teacher {
         this.user = user;
     }
 
-    public void UpdateDatos(DtoUpdateTeacher dtoUpdateTeacher) {
+    public void UpdateTeacher(DtoUpdateTeacher dtoUpdateTeacher) {
         if (dtoUpdateTeacher.fullName() != null){
             this.fullName = dtoUpdateTeacher.fullName();
         }
@@ -54,9 +54,6 @@ public class Teacher {
         }
         if (dtoUpdateTeacher.phone() != null){
             this.phone = dtoUpdateTeacher.phone();
-        }
-        if (dtoUpdateTeacher.user() != null){
-            this.user = user.updatePassword(dtoUpdateTeacher.user());
         }
     }
 }

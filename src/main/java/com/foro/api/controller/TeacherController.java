@@ -31,7 +31,6 @@ public class TeacherController {
     public ResponseEntity<DtoTeacherResponse> registerTeacher(@RequestBody @Valid DtoRegisterTeacher dtoRegisterTeacher,
                                                               UriComponentsBuilder uriComponentsBuilder){
         return teacherService.registerTeacher(dtoRegisterTeacher, uriComponentsBuilder);
-
     }
 
     @PutMapping("/update")

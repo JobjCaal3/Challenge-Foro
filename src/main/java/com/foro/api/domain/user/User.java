@@ -19,7 +19,6 @@ import java.util.List;
 @Table(name = "users")
 @EqualsAndHashCode(of = "idUser")
 public class User {
-    //TODO hacer un controlador donde se pueda eliminar un usuario
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user")
     private Long idUser;
@@ -51,5 +50,9 @@ public class User {
     public User updatePassword(DtoUpdateUser user) {
             this.password = user.password();
             return this;
+    }
+
+    public void deletedUser() {
+        this.isAccountNonLocked = false;
     }
 }
