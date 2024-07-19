@@ -50,6 +50,7 @@ public class SecurityConfigurations {
                 .exceptionHandling(ex ->ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(http -> {
+                    http.requestMatchers("/doc/swagger-ui.html", "/v3/api-docs/**", "/doc/swagger-ui/**").permitAll();
                     // Permisos para la entidad User
                     http.requestMatchers(HttpMethod.POST, "api-foro/user/login").permitAll();
                     http.requestMatchers(HttpMethod.POST, "api-foro/user/create-user").hasAuthority("ADMIN");

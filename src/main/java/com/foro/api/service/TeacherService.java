@@ -34,7 +34,7 @@ public class TeacherService {
 
     public ResponseEntity<DtoTeacherResponse> registerTeacher(DtoRegisterTeacher dtoRegisterTeacher,
                                                               UriComponentsBuilder uriComponentsBuilder) {
-        Role existRole = roleRepo.findByNameRole("TEACHER").orElseThrow(() -> new ValidationIntegration("el rol no existe"));
+        Role existRole = roleRepo.findByNameRole("TEACHER").orElseThrow(() -> new ValidationIntegration("the role not exist"));
 
         User user = new User(dtoRegisterTeacher.user(), existRole);
         user.setPassword(passwordEncoder.encode(dtoRegisterTeacher.user().password()));
@@ -68,7 +68,7 @@ public class TeacherService {
         List<DtoTeacherResponse> teacherResponses = teacherRepo.searchEspecialityTeacher(specialty)
                 .stream().map(DtoTeacherResponse::new).toList();
         if(teacherResponses.isEmpty() || teacherResponses == null){
-            throw new ValidationIntegration("la especialidad por la que esta filtrando no existe");
+            throw new ValidationIntegration("The specialty you are filtering for does not exist");
         }
         return ResponseEntity.ok(teacherResponses);
     }

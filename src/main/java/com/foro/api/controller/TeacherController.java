@@ -4,6 +4,8 @@ import com.foro.api.domain.teacher.*;
 import com.foro.api.domain.user.DTOAuth.DtoAuthenticateResponse;
 import com.foro.api.domain.user.DTOAuth.DtoLogin;
 import com.foro.api.service.TeacherService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api-foro/teacher")
+@SecurityRequirement(name = "bearer-key")
 public class TeacherController {
     private TeacherService teacherService;
 
@@ -26,8 +29,10 @@ public class TeacherController {
         this.teacherService = teacherService;
     }
 
+    @SecurityRequirement(name = "It is for everyone, no login required")
     @PostMapping("/register")
     @Transactional
+    @Operation(summary = "register a new teacher")
     public ResponseEntity<DtoTeacherResponse> registerTeacher(@RequestBody @Valid DtoRegisterTeacher dtoRegisterTeacher,
                                                               UriComponentsBuilder uriComponentsBuilder){
         return teacherService.registerTeacher(dtoRegisterTeacher, uriComponentsBuilder);
@@ -35,21 +40,25 @@ public class TeacherController {
 
     @PutMapping("/update")
     @Transactional
+    @Operation(summary = "register a new teacher")
     public ResponseEntity<DtoTeacherResponse> updateTeacher(@RequestBody @Valid DtoUpdateTeacher dtoUpdateTeacher){
         return teacherService.updateTeacher(dtoUpdateTeacher);
     }
 
     @GetMapping("/list-all-teacher")
+    @Operation(summary = "list all registered teachers")
     public ResponseEntity<Page<DtoTeacherResponse>> listTeacher(@PageableDefault(size = 2, sort = {"fullName"}) Pageable pageable){
         return teacherService.listTeacher(pageable);
     }
 
     @GetMapping("/details-teacher/{idTeacher}")
+    @Operation(summary = "Detail one of the teachers by their ID")
     public ResponseEntity<DtoTeacherDetailsResponse> detailTeacher(@PathVariable Long idTeacher){
         return teacherService.detailTeacher(idTeacher);
     }
 
     @GetMapping("/search-teacher-especiality/{specialty}")
+    @Operation(summary = "look for a teacher by his specialty")
     public ResponseEntity<List<DtoTeacherResponse>> searchEspeciality(@PathVariable String specialty){
         return teacherService.searchEspeciality(specialty);
     }

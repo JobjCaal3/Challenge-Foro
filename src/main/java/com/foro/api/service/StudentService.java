@@ -37,7 +37,7 @@ public class StudentService {
 
     public ResponseEntity<DtoStudentResponse> registerStudent(DtoRegisterStudent dtoRegisterStudent,
                                                               UriComponentsBuilder uriComponentsBuilder) {
-        Role existRole = roleRepo.findByNameRole("STUDENT").orElseThrow(()-> new ValidationIntegration("el rol no existe"));
+        Role existRole = roleRepo.findByNameRole("STUDENT").orElseThrow(()-> new ValidationIntegration("the rol not exist"));
 
         User user = new User(dtoRegisterStudent.user(), existRole);
         user.setPassword(passwordEncoder.encode(dtoRegisterStudent.user().password()));

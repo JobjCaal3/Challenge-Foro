@@ -30,9 +30,9 @@ public class AnswerService {
     public ResponseEntity<DtoAnswerResponse> create(DtoCreateAnswer dtoCreateAnswer,
                                                     UriComponentsBuilder uriComponentsBuilder) {
         User user = userRepo.findById(dtoCreateAnswer.idUser())
-                .orElseThrow(() -> new ValidationIntegration("usuario no encontrado"));
+                .orElseThrow(() -> new ValidationIntegration("user not found"));
         Topic topic = topicRepo.findById(dtoCreateAnswer.idTopic())
-                .orElseThrow(() -> new ValidationIntegration("topico no encontrado"));
+                .orElseThrow(() -> new ValidationIntegration("topic not found"));
 
         Answer answer =  answerRepo.save(new Answer(dtoCreateAnswer.message(), user, topic));
 
@@ -48,7 +48,7 @@ public class AnswerService {
     }
 
     public ResponseEntity deletedAnswer(Long idAnswer) {
-        Answer answer = answerRepo.findById(idAnswer).orElseThrow(()->new ValidationIntegration("la respuesta no existe"));
+        Answer answer = answerRepo.findById(idAnswer).orElseThrow(()->new ValidationIntegration("the asnwer not exist"));
         answer.deletedAnswer();
         return ResponseEntity.noContent().build();
     }

@@ -31,8 +31,7 @@ public class CourseService {
 
     public ResponseEntity<DtoCourseResponse> createCourse(DtoCreateCourse dtoCreateCourse,
                                                           UriComponentsBuilder uriComponentsBuilder) {
-        Teacher teacher = teacherRepo.findById(dtoCreateCourse.teacherId())
-                .orElseThrow(() -> new ValidationIntegration("el teacher que ingreso no existe"));
+        Teacher teacher = teacherRepo.findById(dtoCreateCourse.teacherId()).orElseThrow(() -> new ValidationIntegration("the teacher not found"));
         Course course = courseRepo.save(new Course(dtoCreateCourse, teacher));
         URI url= uriComponentsBuilder.path("api-foro/course/{id}").buildAndExpand(course.getIdCourse()).toUri();
         return ResponseEntity.created(url).body(new DtoCourseResponse(course));
@@ -44,7 +43,7 @@ public class CourseService {
     }
 
     public ResponseEntity<DtoCourseResponse> detailCourse(Long idCourse) {
-        Course course = courseRepo.findByidCourseAndCurrentStatusTrue(idCourse).orElseThrow(()->new ValidationIntegration("no se encontro el curso o esta inactivo"));
+        Course course = courseRepo.findByidCourseAndCurrentStatusTrue(idCourse).orElseThrow(()->new ValidationIntegration("The course was not found or is inactive"));
         return ResponseEntity.ok(new DtoCourseResponse(course));
     }
 
@@ -53,20 +52,20 @@ public class CourseService {
                 .stream().map(DtoCourseResponse::new).toList();
 
         if (courseResponses == null || courseResponses.isEmpty()) {
-            throw new ValidationIntegration("la categoria por la que se esta filtrando no existe");
+            throw new ValidationIntegration("The category being filtered by does not exist");
         }
         return ResponseEntity.ok(courseResponses);
     }
 
     public ResponseEntity<DtoCourseResponse> updateCourse(DtoUpdateCourse dtoUpdateCourse) {
-        Course course = courseRepo.findById(dtoUpdateCourse.idCourse()).orElseThrow(() -> new ValidationIntegration("el curso que ingreso no existe"));
-        Teacher teacher = teacherRepo.findById(dtoUpdateCourse.teacherId()).orElseThrow(() -> new ValidationIntegration("el teacher que ingreso no existe"));
+        Course course = courseRepo.findById(dtoUpdateCourse.idCourse()).orElseThrow(() -> new ValidationIntegration("The course I entered does not exist"));
+        Teacher teacher = teacherRepo.findById(dtoUpdateCourse.teacherId()).orElseThrow(() -> new ValidationIntegration("The teacher I entered does not exist"));
         course.updateCourse(dtoUpdateCourse, teacher);
         return ResponseEntity.ok(new DtoCourseResponse(course, teacher));
     }
 
     public ResponseEntity deltedCourse(Long idCourse) {
-        Course course = courseRepo.findById(idCourse).orElseThrow(() -> new ValidationIntegration("el curso que ingreso no existe"));
+        Course course = courseRepo.findById(idCourse).orElseThrow(() -> new ValidationIntegration("The course I entered does not exist"));
         course.deltedCourse(idCourse);
         return ResponseEntity.noContent().build();
     }

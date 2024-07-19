@@ -36,15 +36,15 @@ public class TopicService {
     public ResponseEntity<DtoTopicResponse> createTopic(DtoRegisterTopic dtoRegisterTopic,
                                                         UriComponentsBuilder uriComponentsBuilder) {
         Student student = studentRepo.findById(dtoRegisterTopic.idStudent())
-                .orElseThrow(()->new ValidationIntegration("el estudiante no existe"));
+                .orElseThrow(()->new ValidationIntegration("the student not found"));
         Course course = courseRepo.findById(dtoRegisterTopic.idCourse())
-                .orElseThrow(()-> new ValidationIntegration("el curso no existe"));
+                .orElseThrow(()-> new ValidationIntegration("the course not found"));
         //comprobacion de que el titulo y el masaje ya existen
         Optional titleVerification = topicRepo.findByTitle(dtoRegisterTopic.title());
         Optional messageVerification = topicRepo.findByMessage(dtoRegisterTopic.message());
 
         if (titleVerification.isPresent() && messageVerification.isPresent()){
-            throw new ValidationIntegration("el titulo del topico y el mensaje ya existen intente con otro nombre o buscque el topico para econtrar respuesta a su duda");
+            throw new ValidationIntegration("The title of the topic and the message already exist, try a different name or search for the topic to find an answer to your question");
         }
 
         Topic topic = topicRepo.save(new Topic(dtoRegisterTopic, student, course));
@@ -60,13 +60,13 @@ public class TopicService {
     }
 
     public ResponseEntity<DtoDetailsTopic> topicDetails(Long idTopic) {
-        Topic topic = topicRepo.findByIdTopicAndStatusTopicTrue(idTopic).orElseThrow(()->new ValidationIntegration("el topico no existe o esta inactivo"));
+        Topic topic = topicRepo.findByIdTopicAndStatusTopicTrue(idTopic).orElseThrow(()->new ValidationIntegration("the topic not found or topic inactive"));
         List<Answer> answer = answerRepo.findByTopicAndMessageStatusTrue(topic);
         return ResponseEntity.ok(new DtoDetailsTopic(topic, answer));
     }
 
     public ResponseEntity<DtoTopicResponse> updateTopic(DtoUpdateTopic dtoUpdateTopic) {
-        Topic topic = topicRepo.findByIdTopicAndStatusTopicTrue(dtoUpdateTopic.idTopic()).orElseThrow(()->new ValidationIntegration("el topico no existe o esta inactivo"));
+        Topic topic = topicRepo.findByIdTopicAndStatusTopicTrue(dtoUpdateTopic.idTopic()).orElseThrow(()->new ValidationIntegration("the topic not found or topic inactive"));
         topic.UpdateDataTopic(dtoUpdateTopic);
         return ResponseEntity.ok(new DtoTopicResponse(topic));
     }
